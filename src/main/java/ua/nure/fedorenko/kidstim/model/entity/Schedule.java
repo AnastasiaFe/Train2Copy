@@ -1,21 +1,27 @@
 package ua.nure.fedorenko.kidstim.model.entity;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.*;
+
+@Table(name = "sch")
 public class Schedule {
-
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    @Column(name = "id")
     private String id;
-    private Map<Day, List<Task>> assignments;
-    private String childId;
 
-    public Schedule() {
+    @ManyToOne
+    @JoinColumn(name = "child_id")
+    private Child child;
 
+    public Child getChild() {
+        return child;
     }
 
-    public Schedule(Map<Day, List<Task>> assignments) {
-        this.assignments = assignments;
+    public void setChild(Child child) {
+        this.child = child;
     }
 
     public String getId() {
@@ -26,38 +32,15 @@ public class Schedule {
         this.id = id;
     }
 
-    public Map<Day, List<Task>> getAssignments() {
-        return assignments;
-    }
+    /*
 
-    public void setAssignments(Map<Day, List<Task>> assignments) {
-        this.assignments = assignments;
-    }
+        public int getTotalProfit() {
+            return assignments.stream()
+                    .flatMap(x -> x.getTasks().stream())
+                    .mapToInt(Task::getPoints)
+                    .sum();
+        }
 
-    public String getChildId() {
-        return childId;
-    }
+    */
 
-    public void setChildId(String childId) {
-        this.childId = childId;
-    }
-
-    public int getTotalProfit() {
-        return assignments.values().stream()
-                .flatMap(Collection::stream)
-                .mapToInt(Task::getPoints)
-                .sum();
-    }
-
-
-    @Override
-    public String toString() {
-        int totalProfit = getTotalProfit();
-        return "Schedule{" +
-                "id='" + id + '\'' +
-                ", assignments=" + assignments +
-                ", childId='" + childId + '\'' +
-                ", totalProfit=" + totalProfit +
-                '}';
-    }
 }
