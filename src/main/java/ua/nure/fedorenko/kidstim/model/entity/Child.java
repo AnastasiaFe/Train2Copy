@@ -10,13 +10,13 @@ import java.io.Serializable;
 public class Child extends User implements Serializable {
 
 
-    @Column(name = "gender")
+    @Column
     private int gender;
 
-    @Column(name = "points")
+    @Column
     private int points;
 
-    @Column(name = "birth")
+    @Column
     private long birth;
 
     public long getBirth() {
@@ -41,25 +41,5 @@ public class Child extends User implements Serializable {
 
     public void setPoints(int points) {
         this.points = points;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Child)) return false;
-        if (!super.equals(o)) return false;
-
-        Child child = (Child) o;
-
-        if (getGender() != child.getGender()) return false;
-        return getPoints() == child.getPoints();
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + getGender();
-        result = 31 * result + getPoints();
-        return result;
     }
 }

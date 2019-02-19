@@ -1,6 +1,5 @@
 package ua.nure.fedorenko.kidstim.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -92,19 +91,11 @@ public class Reward implements Serializable {
 
         Reward reward = (Reward) o;
 
-        if (getPoints() != reward.getPoints()) return false;
-        if (getDescription() != null ? !getDescription().equals(reward.getDescription()) : reward.getDescription() != null)
-            return false;
-        if (getStatus() != reward.getStatus()) return false;
-        return getParent().equals(reward.getParent());
+        return getId().equals(reward.getId());
     }
 
     @Override
     public int hashCode() {
-        int result = getDescription() != null ? getDescription().hashCode() : 0;
-        result = 31 * result + getPoints();
-        result = 31 * result + (getStatus() != null ? getStatus().hashCode() : 0);
-        result = 31 * result + getParent().hashCode();
-        return result;
+        return getId().hashCode();
     }
 }

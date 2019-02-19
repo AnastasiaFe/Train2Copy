@@ -16,19 +16,19 @@ public class User implements Serializable {
     @Column(name = "id")
     private String id;
 
-    @Column(name = "email")
+    @Column
     private String email;
 
-    @Column(name = "password")
+    @Column
     private String password;
 
-    @Column(name = "name")
+    @Column
     private String name;
 
-    @Column(name = "surname")
+    @Column
     private String surname;
 
-    @Column(name = "photo")
+    @Column
     private String photo;
 
     @Column(name = "device_token")
@@ -97,23 +97,14 @@ public class User implements Serializable {
 
         User user = (User) o;
 
-
-        if (!getEmail().equals(user.getEmail())) return false;
-        if (!getPassword().equals(user.getPassword())) return false;
-        if (getName() != null ? !getName().equals(user.getName()) : user.getName() != null) return false;
-        if (getSurname() != null ? !getSurname().equals(user.getSurname()) : user.getSurname() != null) return false;
-        return getPhoto() != null ? getPhoto().equals(user.getPhoto()) : user.getPhoto() == null;
+        if (!getId().equals(user.getId())) return false;
+        return getEmail().equals(user.getEmail());
     }
 
     @Override
     public int hashCode() {
-        int result = getEmail().hashCode();
-        result = 31 * result + getPassword().hashCode();
-        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
-        result = 31 * result + (getSurname() != null ? getSurname().hashCode() : 0);
-        result = 31 * result + (getPhoto() != null ? getPhoto().hashCode() : 0);
+        int result = getId().hashCode();
+        result = 31 * result + getEmail().hashCode();
         return result;
     }
-
-
 }

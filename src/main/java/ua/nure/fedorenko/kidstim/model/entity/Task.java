@@ -1,10 +1,11 @@
 package ua.nure.fedorenko.kidstim.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -17,21 +18,28 @@ public class Task implements Serializable {
     @Column(name = "id")
     private String id;
 
-    @Column(name = "description")
+    @Column
     private String description;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "status")
+    @Column
     private TaskStatus status;
 
+    @Column
+    private int duration;
     @Column(name = "creation_date")
-    private long creationDate;
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
+    private LocalDateTime creationDate;
 
     @Column(name = "expiration_date")
-    private long expirationDate;
-
-    @Column(name = "points")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
+    private LocalDateTime expirationDate;
+    @Column
     private int points;
+    @Column(name = "min_freq")
+    private int minFrequency;
+    @Column(name = "max_freq")
+    private int maxFrequency;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "child_task", joinColumns = {@JoinColumn(name = "task_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "child_id", referencedColumnName = "id")})
@@ -40,6 +48,21 @@ public class Task implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent")
     private Parent parent;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task)) return false;
+
+        Task task = (Task) o;
+
+        return getId().equals(task.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
 
     public String getDescription() {
         return description;
@@ -57,19 +80,19 @@ public class Task implements Serializable {
         this.status = status;
     }
 
-    public long getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(long creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-    public long getExpirationDate() {
+    public LocalDateTime getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(long expirationDate) {
+    public void setExpirationDate(LocalDateTime expirationDate) {
         this.expirationDate = expirationDate;
     }
 
@@ -89,32 +112,12 @@ public class Task implements Serializable {
         this.children = children;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Task)) return false;
-
-        Task task = (Task) o;
-
-        if (getCreationDate() != task.getCreationDate()) return false;
-        if (getExpirationDate() != task.getExpirationDate()) return false;
-        if (getPoints() != task.getPoints()) return false;
-        if (getDescription() != null ? !getDescription().equals(task.getDescription()) : task.getDescription() != null)
-            return false;
-        if (getStatus() != task.getStatus()) return false;
-        return getParent().equals(task.getParent());
+    public int getDuration() {
+        return duration;
     }
 
-    @Override
-    public int hashCode() {
-        int result = getDescription() != null ? getDescription().hashCode() : 0;
-        result = 31 * result + (getStatus() != null ? getStatus().hashCode() : 0);
-        result = 31 * result + (int) (getCreationDate() ^ (getCreationDate() >>> 32));
-        result = 31 * result + (int) (getExpirationDate() ^ (getExpirationDate() >>> 32));
-        result = 31 * result + getPoints();
-        result = 31 * result + getParent().hashCode();
-        return result;
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public String getId() {
@@ -134,4 +137,19 @@ public class Task implements Serializable {
         this.parent = parent;
     }
 
+    public int getMinFrequency() {
+        return minFrequency;
+    }
+
+    public void setMinFrequency(int minFrequency) {
+        this.minFrequency = minFrequency;
+    }
+
+    public int getMaxFrequency() {
+        return maxFrequency;
+    }
+
+    public void setMaxFrequency(int maxFrequency) {
+        this.maxFrequency = maxFrequency;
+    }
 }
