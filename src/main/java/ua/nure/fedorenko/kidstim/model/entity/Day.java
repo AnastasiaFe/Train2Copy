@@ -4,6 +4,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "days")
@@ -18,10 +20,26 @@ public class Day {
     private LocalDate date;
     @Column(name = "max_capacity")
     private int maxCapacity;
+    private int realCapacity;
+    private List<Task> assignedTasks;
 
-    public Day(LocalDate date, int maxCapacity) {
+    public Day(String id, LocalDate date, int maxCapacity) {
+        this.id = id;
         this.date = date;
         this.maxCapacity = maxCapacity;
+        assignedTasks = new ArrayList<>();
+    }
+
+    public int getRealCapacity() {
+        return realCapacity;
+    }
+
+    public void setRealCapacity(int realCapacity) {
+        this.realCapacity = realCapacity;
+    }
+
+    public List<Task> getAssignedTasks() {
+        return assignedTasks;
     }
 
     public String getDayOfWeek() {

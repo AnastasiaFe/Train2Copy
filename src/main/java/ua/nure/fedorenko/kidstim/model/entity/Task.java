@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,14 +34,15 @@ public class Task implements Serializable {
 
     @Column(name = "expiration_date")
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
-    private LocalDateTime expirationDate;
+    private LocalDate expirationDate;
     @Column
     private int points;
     @Column(name = "min_freq")
-    private int minFrequency;
+    private int minFrequency = 1;
     @Column(name = "max_freq")
-    private int maxFrequency;
+    private int maxFrequency = 1;
 
+    private int scheduledFrequency;
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "child_task", joinColumns = {@JoinColumn(name = "task_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "child_id", referencedColumnName = "id")})
     private List<Child> children;
@@ -48,6 +50,14 @@ public class Task implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent")
     private Parent parent;
+
+    public Task(String id, String desc, int points, int duration, LocalDate expirationDate) {
+        this.id = id;
+        this.description = desc;
+        this.points = points;
+        this.duration = duration;
+        this.expirationDate = expirationDate;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -88,11 +98,11 @@ public class Task implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public LocalDateTime getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(LocalDateTime expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 
@@ -114,6 +124,14 @@ public class Task implements Serializable {
 
     public int getDuration() {
         return duration;
+    }
+
+    public int getScheduledFrequency() {
+        return scheduledFrequency;
+    }
+
+    public void setScheduledFrequency(int scheduledFrequency) {
+        this.scheduledFrequency = scheduledFrequency;
     }
 
     public void setDuration(int duration) {
@@ -152,4 +170,19 @@ public class Task implements Serializable {
     public void setMaxFrequency(int maxFrequency) {
         this.maxFrequency = maxFrequency;
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id='" + id + '\'' +
+                ", description='" + description + '\'' +
+                ", duration=" + duration +
+                ", expirationDate=" + expirationDate +
+                ", points=" + points +
+                ", minFrequency=" + minFrequency +
+                ", maxFrequency=" + maxFrequency +
+                '}';
+    }
+
+
 }

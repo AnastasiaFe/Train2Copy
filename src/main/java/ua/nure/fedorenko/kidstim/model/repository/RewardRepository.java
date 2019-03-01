@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface RewardRepository extends CrudRepository<Reward, String> {
 
-    public List<Reward> findByParent(@Param("parent") Parent parent);
+    List<Reward> findByParent(@Param("parent") Parent parent);
 
     @Query("SELECT r FROM Reward r where :child in elements (r.children)")
     public List<Reward> getRewardsByChild(@Param("child") Child child);

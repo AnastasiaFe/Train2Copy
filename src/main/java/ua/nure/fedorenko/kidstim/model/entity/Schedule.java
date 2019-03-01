@@ -1,10 +1,12 @@
 package ua.nure.fedorenko.kidstim.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
-@Table(name = "sch")
+@Table(name = "schedules")
 public class Schedule {
     @Id
     @GeneratedValue(generator = "uuid")
@@ -15,6 +17,9 @@ public class Schedule {
     @ManyToOne
     @JoinColumn(name = "child_id")
     private Child child;
+    @Column
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
+    LocalDate finishDate;
 
     public Child getChild() {
         return child;

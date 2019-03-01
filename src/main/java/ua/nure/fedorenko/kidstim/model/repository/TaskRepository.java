@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import ua.nure.fedorenko.kidstim.model.entity.Child;
 import ua.nure.fedorenko.kidstim.model.entity.Parent;
 import ua.nure.fedorenko.kidstim.model.entity.Task;
+import ua.nure.fedorenko.kidstim.model.entity.TaskStatus;
 
 import java.util.List;
 
@@ -15,8 +16,11 @@ import java.util.List;
 public interface TaskRepository extends CrudRepository<Task, String> {
 
 
-    public List<Task> findByParent(@Param("parent") Parent parent);
+    List<Task> findByParent(@Param("parent") Parent parent);
 
     @Query("SELECT t FROM Task t where :child in elements (t.children)")
-    public List<Task> getTasksByChild(Child child);
+    List<Task> getTasksByChild(Child child);
+
+    List<Task> findByStatus(@Param("status") TaskStatus taskStatus);
+
 }
