@@ -6,7 +6,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ua.nure.fedorenko.kidstim.auth.UserPrincipal;
-import ua.nure.fedorenko.kidstim.model.entity.User;
+import ua.nure.fedorenko.kidstim.model.entity.Child;
+import ua.nure.fedorenko.kidstim.model.entity.LoginData;
+import ua.nure.fedorenko.kidstim.model.entity.Parent;
 import ua.nure.fedorenko.kidstim.service.ChildService;
 import ua.nure.fedorenko.kidstim.service.ParentService;
 
@@ -20,22 +22,32 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User user = parentService.getParentByEmail(s);
-        String role="parent";
-        if (user == null) {
-            user = childService.getChildByEmail(s);
-            role="child";
+        Parent parent = parentService.getParentByEmail(s);
+        LoginData loginData;
+        Child child;
+        String role = "parent";
+        if (parent == null) {
+            child = childService.getChildByEmail(s);
+            role = "child";
+            loginData = new LoginData(child.getId(), child.getEmail(), child.getPassword());
+        } else {
+            loginData = new LoginData(parent.getId(), parent.getEmail(), parent.getPassword());
         }
-        return UserPrincipal.create(user,role);
+        return UserPrincipal.create(loginData, role);
     }
 
     public UserDetails loadUserById(String id) {
-        User user = parentService.getParentById(id);
-        String role="parent";
-        if (user == null) {
-            user = childService.getChildById(id);
-            role="child";
+        Parent parent = parentService.getParentById(id);
+        LoginData loginData;
+        Child child;
+        String role = "parent";
+        if (parent == null) {
+            child = childService.getChildById(id);
+            role = "child";
+            loginData = new LoginData(child.getId(), child.getEmail(), child.getPassword());
+        } else {
+            loginData = new LoginData(parent.getId(), parent.getEmail(), parent.getPassword());
         }
-        return UserPrincipal.create(user,role);
+        return UserPrincipal.create(loginData, role);
     }
 }

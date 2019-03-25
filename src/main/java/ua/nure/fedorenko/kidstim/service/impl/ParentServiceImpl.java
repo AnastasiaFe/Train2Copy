@@ -25,6 +25,7 @@ public class ParentServiceImpl implements ParentService {
 
     @Override
     public void addParent(Parent parent) {
+
         parent.setPassword(passwordEncoder.encode(parent.getPassword()));
         parent.setChildren(new ArrayList<>());
         parentRepository.save(parent);
@@ -32,7 +33,7 @@ public class ParentServiceImpl implements ParentService {
 
     @Override
     public Parent getParentById(String id) {
-        Optional<Parent> parent=parentRepository.findById(id);
+        Optional<Parent> parent = parentRepository.findById(id);
         return parent.orElse(null);
     }
 

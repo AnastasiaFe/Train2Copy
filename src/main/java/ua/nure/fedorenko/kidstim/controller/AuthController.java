@@ -15,8 +15,8 @@ import ua.nure.fedorenko.kidstim.controller.request.LoginRequest;
 import ua.nure.fedorenko.kidstim.controller.request.RegistrationRequest;
 import ua.nure.fedorenko.kidstim.exception.BadRequestException;
 import ua.nure.fedorenko.kidstim.exception.ResourceNotFoundException;
+import ua.nure.fedorenko.kidstim.model.entity.Child;
 import ua.nure.fedorenko.kidstim.model.entity.Parent;
-import ua.nure.fedorenko.kidstim.model.entity.User;
 import ua.nure.fedorenko.kidstim.service.ChildService;
 import ua.nure.fedorenko.kidstim.service.ParentService;
 
@@ -48,7 +48,7 @@ public class AuthController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        httpServletResponse.addHeader("User", authentication.getName() + ";" + authentication.getAuthorities().iterator().next().toString());
+        httpServletResponse.addHeader("UserData", authentication.getName() + ";" + authentication.getAuthorities().iterator().next().toString());
         String token = jwtTokenProvider.generateToken(authentication);
         return new JwtAuthenticationResponse(token);
     }
@@ -60,33 +60,30 @@ public class AuthController {
         if (parentService.getParentByEmail(registrationRequest.getEmail()) != null) {
             throw new BadRequestException("Such username is already taken!");
         }
-        Parent user = new Parent();
-        user.setEmail(registrationRequest.getEmail());
+        Parent user = new Parent(null, registrationRequest.getEmail(), registrationRequest.getName(), registrationRequest.getSurname());
         user.setPassword(registrationRequest.getPassword());
-        user.setName(registrationRequest.getName());
-        user.setSurname(registrationRequest.getSurname());
         parentService.addParent(user);
 
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setEmail(user.getEmail());
-        loginRequest.setPassword(registrationRequest.getPassword());
+        loginRequest.setPassword(user.getPassword());
         return login(loginRequest, httpServletResponse);
     }
 
     @GetMapping("/currentUser")
     @ResponseStatus(HttpStatus.OK)
-    public User getCurrentUser(HttpServletRequest request) {
+    public Object getCurrentUser(HttpServletRequest request) {
         String jwt = jwtTokenProvider.getJwtFromRequest(request);
         String userId = jwtTokenProvider.getUserIdFromJwt(jwt);
-        User user = parentService.getParentById(userId);
-        if (user == null) {
-            user = childService.getChildById(userId);
-            if (user == null) {
-                throw new ResourceNotFoundException("User", "id", userId);
+        Parent parent = parentService.getParentById(userId);
+        if (parent == null) {
+            Child child = childService.getChildById(userId);
+            if (child == null) {
+                throw new ResourceNotFoundException("UserData", "id", userId);
             }
-            return user;
+            return child;
         }
-        return user;
+        return parent;
     }
 
 

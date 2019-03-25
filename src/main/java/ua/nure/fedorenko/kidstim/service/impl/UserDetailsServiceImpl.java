@@ -8,7 +8,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import ua.nure.fedorenko.kidstim.model.entity.User;
+import ua.nure.fedorenko.kidstim.model.entity.Child;
+import ua.nure.fedorenko.kidstim.model.entity.LoginData;
+import ua.nure.fedorenko.kidstim.model.entity.Parent;
 import ua.nure.fedorenko.kidstim.service.ChildService;
 import ua.nure.fedorenko.kidstim.service.ParentService;
 
@@ -32,18 +34,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         LOGGER.info("Load user by username is working...");
         List<GrantedAuthority> authorityList = new ArrayList<>();
-        User user = parentService.getParentByEmail(s);
+        Parent user = parentService.getParentByEmail(s);
+        LoginData loginData;
         if (user == null) {
-            user = childService.getChildByEmail(s);
-            if (user == null) {
-                LOGGER.info("User not found!");
+            Child child = childService.getChildByEmail(s);
+            if (child == null) {
+                LOGGER.info("UserData not found!");
                 throw new UsernameNotFoundException(s);
             } else {
+                loginData = new LoginData(child.getId(), child.getEmail(), child.getPassword());
                 authorityList.add(new SimpleGrantedAuthority(CHILD_ROLE));
             }
         } else {
+            loginData = new LoginData(user.getId(), user.getEmail(), user.getPassword());
             authorityList.add(new SimpleGrantedAuthority(PARENT_ROLE));
         }
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorityList);
+        return new org.springframework.security.core.userdetails.User(loginData.getEmail(), loginData.getPassword(), authorityList);
     }
 }

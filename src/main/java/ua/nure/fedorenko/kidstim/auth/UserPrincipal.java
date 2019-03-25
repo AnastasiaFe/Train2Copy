@@ -3,7 +3,7 @@ package ua.nure.fedorenko.kidstim.auth;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ua.nure.fedorenko.kidstim.model.entity.User;
+import ua.nure.fedorenko.kidstim.model.entity.LoginData;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,18 +13,16 @@ public class UserPrincipal implements UserDetails {
     private String id;
     private String email;
     private String password;
-    private String name;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(String id, String email, String password, String name, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(String id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.name = name;
         this.authorities = authorities;
     }
 
-    public static UserPrincipal create(User user, String role) {
+    public static UserPrincipal create(LoginData loginData, String role) {
         /*
         List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
                 new SimpleGrantedAuthority(role.getName().name())
@@ -33,10 +31,9 @@ public class UserPrincipal implements UserDetails {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(role));
         return new UserPrincipal(
-                user.getId(),
-                user.getEmail(),
-                user.getPassword(),
-                user.getName(),
+                loginData.getId(),
+                loginData.getEmail(),
+                loginData.getPassword(),
                 authorities
         );
     }
