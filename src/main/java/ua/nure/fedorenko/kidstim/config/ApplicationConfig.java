@@ -1,5 +1,6 @@
 package ua.nure.fedorenko.kidstim.config;
 
+import com.cloudinary.Cloudinary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableTransactionManagement
@@ -35,5 +38,14 @@ public class ApplicationConfig {
         dataSource.setUsername(environment.getRequiredProperty("database.user"));
         dataSource.setPassword(environment.getRequiredProperty("database.password"));
         return dataSource;
+    }
+
+    @Bean
+    public Cloudinary cloudinary() {
+        Map config = new HashMap();
+        config.put("cloud_name", "dibxjqjtz");
+        config.put("api_key", "146292983354175");
+        config.put("api_secret", "C9p4xSyuFls8DVMu9Hy3iThR0kg");
+        return new Cloudinary(config);
     }
 }
