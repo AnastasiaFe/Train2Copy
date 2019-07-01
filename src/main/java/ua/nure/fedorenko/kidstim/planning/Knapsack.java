@@ -22,28 +22,25 @@ public class Knapsack {
         this.capacity = capacity;
     }
 
-
-    // we write the solve algorithm
     public Solution solve() {
         logInputData();
         int numberOfItems = tasks.length;
-        // we use a matrix to store the max value at each n-th item
         int[][] matrix = new int[numberOfItems + 1][capacity + 1];
 
-        // first line is initialized to 0
-        for (int i = 0; i <= capacity; i++)
+        for (int i = 0; i <= capacity; i++) {
             matrix[0][i] = 0;
+        }
 
-        // we iterate on tasks
         for (int i = 1; i <= numberOfItems; i++) {
-            // we iterate on each capacity
+
             for (int j = 0; j <= capacity; j++) {
-                if (tasks[i - 1].getDuration() > j)
+                if (tasks[i - 1].getDuration() > j) {
                     matrix[i][j] = matrix[i - 1][j];
-                else
-                    // we maximize value at this rank in the matrix
+                }
+                else {
                     matrix[i][j] = Math.max(matrix[i - 1][j], matrix[i - 1][j - tasks[i - 1].getDuration()]
                             + tasks[i - 1].getPoints());
+                }
             }
         }
 
@@ -54,7 +51,6 @@ public class Knapsack {
         for (int i = numberOfItems; i > 0 && res > 0; i--) {
             if (res != matrix[i - 1][w]) {
                 itemsSolution.add(tasks[i - 1]);
-                // we remove tasks value and weight
                 res -= tasks[i - 1].getPoints();
                 w -= tasks[i - 1].getDuration();
             }
@@ -88,7 +84,6 @@ public class Knapsack {
     }
 
     public static void main(String[] args) {
-        // we take the same instance of the problem displayed in the image
         Task[] jobs = new Task[7];
         jobs[0] = new Task("1", "wash dishes", 20, 20, LocalDate.of(2019, 2, 21));
         jobs[1] = new Task("2", "math", 50, 60, LocalDate.of(2019, 2, 22));

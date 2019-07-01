@@ -2,6 +2,7 @@ package ua.nure.fedorenko.kidstim.model.entity
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import org.hibernate.annotations.GenericGenerator
+import java.io.Serializable
 import java.time.LocalDate
 import java.util.ArrayList
 import javax.persistence.*
@@ -20,7 +21,7 @@ data class Day(
         @Column(name = "max_capacity")
         var maxCapacity: Int = 0
 
-) {
+):Serializable {
     var realCapacity: Int = 0
     @JsonInclude
     @Transient

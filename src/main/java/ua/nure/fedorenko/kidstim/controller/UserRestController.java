@@ -85,7 +85,8 @@ public class UserRestController {
                 ImageIO.write(avatar, AppConstants.IMAGES_EXTENSION, out);
             }
         } catch (IOException ex) {
-            response.sendError(404);
+           // response.sendError(404);
+            LOGGER.error(ex.toString());
         }
     }
 
