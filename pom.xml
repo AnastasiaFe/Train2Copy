@@ -19,7 +19,7 @@
         <logback.version>1.2.3</logback.version>
         <jjwt.version>0.9.1</jjwt.version>
         <springfox.version>2.9.2</springfox.version>
-      
+
         <junit-version>4.11</junit-version>
         <kotlin.version>1.2.71</kotlin.version>
     </properties>
