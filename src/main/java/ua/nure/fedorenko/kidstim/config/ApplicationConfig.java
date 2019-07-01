@@ -25,6 +25,7 @@ public class ApplicationConfig {
 
     @Bean
     public CommonsMultipartResolver multipartResolver() {
+        System.out.println("test");
         CommonsMultipartResolver multipart = new CommonsMultipartResolver();
         multipart.setMaxUploadSize(-1);
         return multipart;
