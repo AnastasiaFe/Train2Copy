@@ -30,7 +30,7 @@ public class ApplicationConfig {
         multipart.setMaxUploadSize(-1);
         return multipart;
     }
-/*
+
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -40,7 +40,7 @@ public class ApplicationConfig {
         dataSource.setPassword(environment.getRequiredProperty("database.password"));
         return dataSource;
     }
-*/
+
     @Bean
     public Cloudinary cloudinary() {
         Map config = new HashMap();
