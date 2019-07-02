@@ -17,11 +17,11 @@ import ua.nure.fedorenko.kidstim.service.ImageService;
 import ua.nure.fedorenko.kidstim.service.ParentService;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URL;
 import java.util.List;
 
 @RestController
@@ -35,15 +35,7 @@ public class UserRestController {
     private ImageService imageService;
 
     @Autowired
-    private Cloudinary cloudinary;
-    @Autowired
     private ChildService childService;
-
-    @Value("${app.parentImagesFolder}")
-    private String parentImagesFolder;
-
-    @Value("${app.childrenImagesFolder}")
-    private String childrenImagesFolder;
 
     @PutMapping(value = "/updateParent")
     @ResponseStatus(HttpStatus.OK)
@@ -76,16 +68,15 @@ public class UserRestController {
         } else {
             Child child = childService.getChildByEmail(name);
             url = child.getPhoto();
-            childService.updateChild(child);
         }
         response.setContentType("image/png");
-        try (OutputStream out = response.getOutputStream()) {
-            BufferedImage avatar = ImageIO.read(new URL(url));
+        try {
+            OutputStream out = response.getOutputStream();
+            BufferedImage avatar = imageService.getImage(url);
             if (avatar != null) {
-                ImageIO.write(avatar, AppConstants.IMAGES_EXTENSION, out);
+                ImageIO.write(avatar, AppConstants.IMAGES_EXTENSION, new MemoryCacheImageOutputStream(out));
             }
         } catch (IOException ex) {
-           // response.sendError(404);
             LOGGER.error(ex.toString());
         }
     }

@@ -10,6 +10,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import ua.nure.fedorenko.kidstim.service.ImageService;
+import ua.nure.fedorenko.kidstim.service.impl.FileSystemImageServiceImpl;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -25,12 +27,11 @@ public class ApplicationConfig {
 
     @Bean
     public CommonsMultipartResolver multipartResolver() {
-        System.out.println("test");
         CommonsMultipartResolver multipart = new CommonsMultipartResolver();
         multipart.setMaxUploadSize(-1);
         return multipart;
     }
-/*
+
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -40,7 +41,12 @@ public class ApplicationConfig {
         dataSource.setPassword(environment.getRequiredProperty("database.password"));
         return dataSource;
     }
-*/
+
+    @Bean
+    public ImageService imageService() {
+        return new FileSystemImageServiceImpl();
+    }
+/*
     @Bean
     public Cloudinary cloudinary() {
         Map config = new HashMap();
@@ -49,4 +55,5 @@ public class ApplicationConfig {
         config.put("api_secret", "C9p4xSyuFls8DVMu9Hy3iThR0kg");
         return new Cloudinary(config);
     }
+    */
 }

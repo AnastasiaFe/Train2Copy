@@ -48,8 +48,6 @@ public class AuthController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        LOG.info(authentication.toString());
-       // httpServletResponse.addHeader("UserData", authentication.getName() + ";" + authentication.getAuthorities().iterator().next().toString());
         String email=authentication.getName();
         String role=authentication.getAuthorities().iterator().next().toString();
         String token = jwtTokenProvider.generateToken(authentication);
