@@ -19,7 +19,7 @@ public interface TaskRepository extends CrudRepository<Task, String> {
     List<Task> findByParent(@Param("parent") Parent parent);
 
     @Query("SELECT t FROM Task t where :child in elements (t.children)")
-    List<Task> getTasksByChild(Child child);
+    List<Task> getTasksByChild(@Param("child") Child child);
 
     List<Task> findByStatus(@Param("status") TaskStatus taskStatus);
 

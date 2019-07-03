@@ -21,6 +21,6 @@ data class Schedule(
     var child: Child? = null
     @Column
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
-    var finishDate: LocalDate? = null
+    var finishDate: Long? = null
 
 }

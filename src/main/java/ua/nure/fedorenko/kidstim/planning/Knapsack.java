@@ -83,17 +83,5 @@ public class Knapsack {
         }
     }
 
-    public static void main(String[] args) {
-        Task[] jobs = new Task[7];
-        jobs[0] = new Task("1", "wash dishes", 20, 20, LocalDate.of(2019, 2, 21));
-        jobs[1] = new Task("2", "math", 50, 60, LocalDate.of(2019, 2, 22));
-        jobs[2] = new Task("3", "english", 70, 50, LocalDate.of(2019, 2, 22));
-        jobs[3] = new Task("4", "cook", 30, 20, LocalDate.of(2019, 2, 21));
-        jobs[4] = new Task("5", "read", 20, 30, LocalDate.of(2019, 2, 23));
-        jobs[5] = new Task("6", "feed cat", 10, 15, LocalDate.of(2019, 2, 23));
-        jobs[6] = new Task("7", "help", 40, 35, LocalDate.of(2019, 2, 21));
 
-        Knapsack knapsack = new Knapsack(jobs, 70);
-        knapsack.solve();
-    }
 }

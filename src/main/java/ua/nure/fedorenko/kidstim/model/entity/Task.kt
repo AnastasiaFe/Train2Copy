@@ -1,11 +1,8 @@
 package ua.nure.fedorenko.kidstim.model.entity
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import org.hibernate.annotations.GenericGenerator
-import java.time.LocalDate
-import java.time.LocalDateTime
+import java.io.Serializable
 import javax.persistence.*
-import java.io.Serializable;
 
 @Entity
 @Table
@@ -25,13 +22,13 @@ data class Task(
 
         @Column
         var duration: Int = 0,
+
         @Column(name = "creation_date")
-        @JsonFormat(shape = JsonFormat.Shape.NUMBER)
-        var creationDate: LocalDateTime? = null,
+       // @field:JsonDeserialize(using = LocalDateTimeFromEpochDeserializer::class)
+        var creationDate: Long? = null,
 
         @Column(name = "expiration_date")
-        @JsonFormat(shape = JsonFormat.Shape.NUMBER)
-        var expirationDate: LocalDate? = null,
+        var expirationDate: Long? = null,
         @Column
         var points: Int = 0,
         @Column(name = "min_freq")
@@ -41,6 +38,7 @@ data class Task(
 ) : Serializable {
 
 
+    @Transient
     var scheduledFrequency: Int = 0
     @ManyToMany(fetch = FetchType.LAZY, cascade = [(CascadeType.MERGE), (CascadeType.REFRESH)])
     @JoinTable(name = "child_task", joinColumns = [(JoinColumn(name = "task_id", referencedColumnName = "id"))], inverseJoinColumns = [(JoinColumn(name = "child_id", referencedColumnName = "id"))])
@@ -50,7 +48,7 @@ data class Task(
     @JoinColumn(name = "parent")
     var parent: Parent? = null
 
-    constructor(id: String, desc: String, points: Int, duration: Int, expirationDate: LocalDate) : this() {
+    constructor(id: String, desc: String, points: Int, duration: Int, expirationDate: Long) : this() {
         this.id = id
         this.description = desc
         this.points = points

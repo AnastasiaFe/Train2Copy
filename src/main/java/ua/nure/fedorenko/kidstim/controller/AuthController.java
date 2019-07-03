@@ -66,8 +66,8 @@ public class AuthController {
         parentService.addParent(user);
 
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail(user.getEmail());
-        loginRequest.setPassword(user.getPassword());
+        loginRequest.setEmail(registrationRequest.getEmail());
+        loginRequest.setPassword(registrationRequest.getPassword());
         return login(loginRequest, httpServletResponse);
     }
 

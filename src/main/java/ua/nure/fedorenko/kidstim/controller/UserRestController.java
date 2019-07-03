@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ua.nure.fedorenko.kidstim.AppConstants;
@@ -36,6 +37,8 @@ public class UserRestController {
 
     @Autowired
     private ChildService childService;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @PutMapping(value = "/updateParent")
     @ResponseStatus(HttpStatus.OK)
@@ -43,16 +46,17 @@ public class UserRestController {
         parentService.updateParent(parent);
     }
 
+
     @PostMapping(value = "/uploadImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
-    public void uploadImage(@RequestParam MultipartFile file, @RequestParam("name") String name, @RequestParam("role") String role) {
+    public void uploadImage(@RequestParam MultipartFile file, @RequestParam("name") String name, @RequestParam("email") String email, @RequestParam("role") String role) {
         String url = imageService.uploadImage(file, name);
         if (role.equals("parent")) {
-            Parent parent = parentService.getParentByEmail(name);
+            Parent parent = parentService.getParentByEmail(email);
             parent.setPhoto(url);
             parentService.updateParent(parent);
         } else {
-            Child child = childService.getChildByEmail(name);
+            Child child = childService.getChildByEmail(email);
             child.setPhoto(url);
             childService.updateChild(child);
         }

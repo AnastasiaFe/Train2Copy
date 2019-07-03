@@ -10,8 +10,9 @@ import ua.nure.fedorenko.kidstim.planning.Knapsack;
 import ua.nure.fedorenko.kidstim.service.ChildService;
 import ua.nure.fedorenko.kidstim.service.ScheduleService;
 import ua.nure.fedorenko.kidstim.service.TaskService;
+import ua.nure.fedorenko.kidstim.service.date.DateUtils;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -33,22 +34,22 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Schedule generateSchedule(LocalDate startDay, String childId, int... capacities) {
+    public Schedule generateSchedule(LocalDateTime startDay, String childId, int... capacities) {
         Schedule schedule = new Schedule();
         List<Day> days = getDaysForScheduling(startDay, capacities);
         //Task[] allTasksOfChild = taskService.getTasksByChild(childService.getChildById(childId)).toArray(new Task[0]);
         Task[] jobs = new Task[7];
-        jobs[0] = new Task("1", "wash dishes", 20, 20, LocalDate.of(2030, 3, 8));
+        jobs[0] = new Task("1", "wash dishes", 20, 20, DateUtils.getMillisFromTime(LocalDateTime.of(2030, 3, 8, 23, 23)));
         jobs[0].setMinFrequency(3);
-        jobs[1] = new Task("2", "math", 50, 60, LocalDate.of(2019, 3, 15));
-        jobs[2] = new Task("3", "english", 70, 50, LocalDate.of(2019, 3, 13));
-        jobs[3] = new Task("4", "cook", 30, 20, LocalDate.of(2030, 3, 8));
+        jobs[1] = new Task("2", "math", 50, 60, DateUtils.getMillisFromTime(LocalDateTime.of(2019, 3, 15, 3, 23)));
+        jobs[2] = new Task("3", "english", 70, 50, DateUtils.getMillisFromTime(LocalDateTime.of(2019, 3, 13, 4, 30)));
+        jobs[3] = new Task("4", "cook", 30, 20, DateUtils.getMillisFromTime(LocalDateTime.of(2030, 3, 8, 5, 24)));
         jobs[3].setMinFrequency(3);
         jobs[3].setMaxFrequency(5);
-        jobs[4] = new Task("5", "read", 20, 30, LocalDate.of(2019, 3, 13));
-        jobs[5] = new Task("6", "feed cat", 10, 15, LocalDate.of(2030, 3, 8));
+        jobs[4] = new Task("5", "read", 20, 30, DateUtils.getMillisFromTime(LocalDateTime.of(2019, 3, 13, 6, 35)));
+        jobs[5] = new Task("6", "feed cat", 10, 15, DateUtils.getMillisFromTime(LocalDateTime.of(2030, 3, 8, 8, 9)));
         jobs[5].setMinFrequency(4);
-        jobs[6] = new Task("7", "help", 40, 35, LocalDate.of(2019, 3, 19));
+        jobs[6] = new Task("7", "help", 40, 35, DateUtils.getMillisFromTime(LocalDateTime.of(2019, 3, 19, 12, 12)));
         int totalLoadForDays = getTotalLoadForDays(days);
         List<Task> tasksWithFrequencies = new ArrayList<>();
         for (Task task : jobs) {
@@ -123,9 +124,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     private boolean processTaskWithDeadline(Task task, Day day) throws NotMeetsDeadlineException {
-        LocalDate deadline = task.getExpirationDate();
+        LocalDateTime deadline = DateUtils.getTimeFromLong(task.getExpirationDate());
 
-        LocalDate dayDate = day.getDate();
+        LocalDateTime dayDate = DateUtils.getTimeFromLong(day.getDate());
         if (isMeetDeadline(deadline, dayDate)) {
             if (isFitIntoDay(task, day)) {
                 addTaskIntoSchedule(task, day);
@@ -178,12 +179,12 @@ public class ScheduleServiceImpl implements ScheduleService {
         return day.getRealCapacity() + task.getDuration() <= day.getMaxCapacity();
     }
 
-    private boolean isMeetDeadline(LocalDate deadline, LocalDate dayDate) {
+    private boolean isMeetDeadline(LocalDateTime deadline, LocalDateTime dayDate) {
         return deadline.isAfter(dayDate) || deadline.isEqual(dayDate);
     }
 
     public static void main(String[] args) {
-        new ScheduleServiceImpl().generateSchedule(LocalDate.now(), "1", 50, 80, 40, 160, 45, 70);
+        new ScheduleServiceImpl().generateSchedule(LocalDateTime.now(), "1", 50, 80, 40, 160, 45, 70);
     }
 
     // TODO: 2/21/2019 implement frequencies features
@@ -215,10 +216,10 @@ public class ScheduleServiceImpl implements ScheduleService {
                 .sum();
     }
 
-    private static List<Day> getDaysForScheduling(LocalDate start, int... capacities) {
+    private static List<Day> getDaysForScheduling(LocalDateTime start, int... capacities) {
         List<Day> daysForScheduling = new ArrayList<>();
         for (int i = 0; i < capacities.length; i++) {
-            daysForScheduling.add(new Day(String.valueOf(i), start.plusDays(i), capacities[i]));
+            daysForScheduling.add(new Day(String.valueOf(i), DateUtils.getMillisFromTime(start.plusDays(i)), capacities[i]));
         }
         return daysForScheduling;
     }

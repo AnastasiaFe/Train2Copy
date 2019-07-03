@@ -11,7 +11,7 @@ data class Child(
         @GeneratedValue(generator = "uuid")
         @GenericGenerator(name = "uuid", strategy = "uuid")
         @Column(name = "id")
-        var id: String,
+        var id: String?=null,
         @Column
         var email: String,
         @Column

@@ -17,7 +17,7 @@ data class Day(
         var id: String,
 
         @Column
-        var date: LocalDate? = null,
+        var date: Long? = null,
         @Column(name = "max_capacity")
         var maxCapacity: Int = 0
 
